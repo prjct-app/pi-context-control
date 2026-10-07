@@ -1,6 +1,6 @@
 {
   "name": "@prjct.app/pi-context-control",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Agent-owned context inspection, history recovery and native Pi compaction.",
   "type": "module",
   "license": "MIT",
@@ -24,7 +24,7 @@
     "@earendil-works/pi-tui": "*"
   },
   "scripts": {
-    "check": "node --check index.js && node --check src/history.js && node --check src/controller.js",
+    "check": "node --check index.js && node --check src/history.js && node --check src/controller.js && node --check src/views.js",
     "test": "node --test tests/*.test.js",
     "check:package": "npm pack --dry-run --ignore-scripts"
   },

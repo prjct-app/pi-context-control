@@ -3,7 +3,7 @@ import { readHistory } from './history.js';
 const result = value => ({ content: [{ type: 'text', text: JSON.stringify(value) }], details: value });
 
 /** No context transforms, timers, threshold prompts, classifiers or model requests. */
-export function installContextControl(pi, schemas, compactionSettings, statusRenderers = {}) {
+export function installContextControl(pi, schemas, compactionSettings, views = {}) {
   const state = { generation: 0, pending: false };
   const reset = () => { state.generation += 1; state.pending = false; };
   pi.on('session_start', reset);
@@ -13,7 +13,7 @@ export function installContextControl(pi, schemas, compactionSettings, statusRen
     name: 'context_status', label: 'Context status',
     description: 'Inspect current context size, native Pi compaction threshold and usage. Processed tokens include cached input; they do not measure remaining provider quota. Inspection does not trigger compaction.',
     parameters: schemas.status,
-    ...statusRenderers,
+    ...views.status,
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     async execute(_id, _args, _signal, _update, ctx) {
       const usage = ctx.getContextUsage();
@@ -38,6 +38,7 @@ export function installContextControl(pi, schemas, compactionSettings, statusRen
     name: 'context_history', label: 'Context history',
     description: 'Recover original text from this session branch, including before compaction. Search literal text (empty query lists entries), then read by ID; follow nextOffset for more. Images remain in the journal.',
     parameters: schemas.history,
+    ...views.history,
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     async execute(_id, args, _signal, _update, ctx) { return result(readHistory(ctx.sessionManager.getBranch(), args)); },
   });
@@ -45,6 +46,7 @@ export function installContextControl(pi, schemas, compactionSettings, statusRen
     name: 'context_compact', label: 'Request context checkpoint', exposure: 'model-only',
     description: 'Optionally request native Pi compaction when you judge a checkpoint useful. Costs one summary request using your current model and reasoning, pauses this run, then resumes unless resume=false. No handoff note required; normal prose can finish a task. Recover omitted details with context_history. Call alone after pending tools finish.',
     parameters: schemas.compact,
+    ...views.compact,
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
     async execute(_id, args, signal, _update, ctx) {
       if (signal?.aborted) throw new Error('Checkpoint request cancelled.');

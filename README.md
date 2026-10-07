@@ -6,11 +6,13 @@ The active agent owns its context decisions. This independent Pi extension provi
 - `context_history` searches the selected session branch by literal text and reads original text by entry ID, including entries before compaction. Results have explicit pagination. Listing and reading render only the requested entries; literal search still examines the whole selected branch. Stored history is never shortened or rewritten. Images and opaque reasoning remain in the original journal.
 - `context_compact` requests a native checkpoint when the active agent chooses one. An optional `focus` adds instructions, without requiring a handoff note. Pi uses the current model and reasoning settings, pauses the run, saves the summary, then continues the same task. `resume: false` leaves the session paused.
 
+All three tools use compact terminal rows with expandable details. This changes presentation only; errors remain visible and the complete results reach the model.
+
 There is no JEV integration, classifier, alternate summarizer model, cost trigger, timer, automatic early compaction, observation masking, reasoning pruning or message-count limit. Normal prose can complete a task. Native Pi automatic compaction remains available at its configured threshold.
 
 ## Install
 
-Install independently from npm with `pi install npm:@prjct.app/pi-context-control@0.1.1`. It requires the host-provided `@earendil-works/pi-ai`, `@earendil-works/pi-coding-agent` and `@earendil-works/pi-tui` SDKs. It does not import sibling checkouts.
+Install independently from npm with `pi install npm:@prjct.app/pi-context-control@0.1.2`. It requires the host-provided `@earendil-works/pi-ai`, `@earendil-works/pi-coding-agent` and `@earendil-works/pi-tui` SDKs. It does not import sibling checkouts.
 
 An optional cache-sharing summary extension may handle Pi's native compaction event; load that extension last. This package works with Pi's native summarizer by itself.
 

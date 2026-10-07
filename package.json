@@ -1,0 +1,39 @@
+{
+  "name": "@prjct.app/pi-context-control",
+  "version": "0.1.0",
+  "description": "Agent-owned context inspection, history recovery and native Pi compaction.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "pi": {
+    "extensions": [
+      "./index.js"
+    ]
+  },
+  "files": [
+    "index.js",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "peerDependencies": {
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "scripts": {
+    "check": "node --check index.js && node --check src/history.js && node --check src/controller.js",
+    "test": "node --test tests/*.test.js",
+    "check:package": "npm pack --dry-run --ignore-scripts"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "context",
+    "compaction"
+  ]
+}

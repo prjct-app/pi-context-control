@@ -3,7 +3,7 @@ import { readHistory } from './history.js';
 const result = value => ({ content: [{ type: 'text', text: JSON.stringify(value) }], details: value });
 
 /** No context transforms, timers, threshold prompts, classifiers or model requests. */
-export function installContextControl(pi, schemas, compactionSettings) {
+export function installContextControl(pi, schemas, compactionSettings, statusRenderers = {}) {
   const state = { generation: 0, pending: false };
   const reset = () => { state.generation += 1; state.pending = false; };
   pi.on('session_start', reset);
@@ -13,6 +13,7 @@ export function installContextControl(pi, schemas, compactionSettings) {
     name: 'context_status', label: 'Context status',
     description: 'Inspect current context size, native Pi compaction threshold and usage. Processed tokens include cached input; they do not measure remaining provider quota. Inspection does not trigger compaction.',
     parameters: schemas.status,
+    ...statusRenderers,
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     async execute(_id, _args, _signal, _update, ctx) {
       const usage = ctx.getContextUsage();

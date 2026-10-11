@@ -1,6 +1,6 @@
 {
   "name": "@prjct.app/pi-context-control",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Agent-owned context inspection, history recovery and native Pi compaction.",
   "repository": {
     "type": "git",

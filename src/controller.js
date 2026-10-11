@@ -1,6 +1,6 @@
 import { readHistory } from './history.js';
 
-const result = value => ({ content: [{ type: 'text', text: JSON.stringify(value) }], details: value });
+const result = value => ({ content: [{ type: 'text', text: JSON.stringify(value) }], structuredContent: value, details: value });
 
 /** No context transforms, timers, threshold prompts, classifiers or model requests. */
 export function installContextControl(pi, schemas, compactionSettings, views = {}) {
@@ -13,6 +13,7 @@ export function installContextControl(pi, schemas, compactionSettings, views = {
     name: 'context_status', label: 'Context status',
     description: 'Inspect current context size, native Pi compaction threshold and usage. Processed tokens include cached input; they do not measure remaining provider quota. Inspection does not trigger compaction.',
     parameters: schemas.status,
+    ...(schemas.statusOutput ? { outputSchema: schemas.statusOutput } : {}),
     ...views.status,
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     async execute(_id, _args, _signal, _update, ctx) {
@@ -38,6 +39,7 @@ export function installContextControl(pi, schemas, compactionSettings, views = {
     name: 'context_history', label: 'Context history',
     description: 'Recover original text from this session branch, including before compaction. Search literal text (empty query lists entries), then read by ID; follow nextOffset for more. Images remain in the journal.',
     parameters: schemas.history,
+    ...(schemas.historyOutput ? { outputSchema: schemas.historyOutput } : {}),
     ...views.history,
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     async execute(_id, args, _signal, _update, ctx) { return result(readHistory(ctx.sessionManager.getBranch(), args)); },

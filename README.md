@@ -1,5 +1,7 @@
 # Pi Context Control
 
+[![pi-context-control — for PI Agent](https://raw.githubusercontent.com/prjct-app/pi-context-control/main/docs/cover.png)](https://pi.dev)
+
 The active agent owns its context decisions. This independent Pi extension provides three optional tools through Pi's public SDK:
 
 - `context_status` shows one compact terminal line; expand the tool result for model, reasoning, compaction and usage details. The model still receives the complete structured result. Cached input is reported separately; processed tokens are not a provider quota estimate.
@@ -12,7 +14,7 @@ There is no JEV integration, classifier, alternate summarizer model, cost trigge
 
 ## Install
 
-Install independently from npm with `pi install npm:@prjct.app/pi-context-control@0.1.2`. It requires the host-provided `@earendil-works/pi-ai`, `@earendil-works/pi-coding-agent` and `@earendil-works/pi-tui` SDKs. It does not import sibling checkouts.
+Install independently from npm with `pi install npm:@prjct.app/pi-context-control`. It requires the host-provided `@earendil-works/pi-ai`, `@earendil-works/pi-coding-agent` and `@earendil-works/pi-tui` SDKs. It does not import sibling checkouts.
 
 An optional cache-sharing summary extension may handle Pi's native compaction event; load that extension last. This package works with Pi's native summarizer by itself.
 

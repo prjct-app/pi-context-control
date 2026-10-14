@@ -1,4 +1,7 @@
-import { readHistory } from './history.js';
+/** Past entries live in the journal; pi-memory's memory_context searches them when it is loaded. */
+const historyHint = pi => (pi.getActiveTools?.() ?? []).includes('memory_context')
+  ? 'Entries from before compaction stay in the session journal; search or read them with memory_context.'
+  : 'Entries from before compaction stay in the session journal.';
 
 const result = value => ({ content: [{ type: 'text', text: JSON.stringify(value) }], structuredContent: value, details: value });
 
@@ -32,21 +35,12 @@ export function installContextControl(pi, schemas, compactionSettings, views = {
         nativeCompactionEnabled: settings.enabled, nativeCompactionThreshold: ctx.model ? ctx.model.contextWindow - settings.reserveTokens : null,
         keepRecentTokens: settings.keepRecentTokens, processedTokens: totals, compactionPending: state.pending,
         latestCompaction: latest ? { id: latest.id, firstKeptEntryId: latest.firstKeptEntryId, tokensBefore: latest.tokensBefore } : null,
-        history: 'Original entries on this branch remain available through context_history. No quota estimate is inferred from API prices.' });
+        history: `${historyHint(pi)} No quota estimate is inferred from API prices.` });
     },
   });
   pi.registerTool({
-    name: 'context_history', label: 'Context history',
-    description: 'Recover original text from this session branch, including before compaction. Search literal text (empty query lists entries), then read by ID; follow nextOffset for more. Images remain in the journal.',
-    parameters: schemas.history,
-    ...(schemas.historyOutput ? { outputSchema: schemas.historyOutput } : {}),
-    ...views.history,
-    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
-    async execute(_id, args, _signal, _update, ctx) { return result(readHistory(ctx.sessionManager.getBranch(), args)); },
-  });
-  pi.registerTool({
     name: 'context_compact', label: 'Request context checkpoint', exposure: 'model-only',
-    description: 'Optionally request native Pi compaction when you judge a checkpoint useful. Costs one summary request using your current model and reasoning, pauses this run, then resumes unless resume=false. No handoff note required; normal prose can finish a task. Recover omitted details with context_history. Call alone after pending tools finish.',
+    description: 'Optionally request native Pi compaction when you judge a checkpoint useful. Costs one summary request using your current model and reasoning, pauses this run, then resumes unless resume=false. No handoff note required; normal prose can finish a task. Call alone after pending tools finish.',
     parameters: schemas.compact,
     ...views.compact,
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
@@ -79,7 +73,7 @@ export function installContextControl(pi, schemas, compactionSettings, views = {
             state.pending = false;
             if (args.resume !== false) {
               try { pi.sendMessage({ customType: 'context-checkpoint', display: false,
-                content: 'The checkpoint you requested completed. Continue the existing task with its original constraints and latest user steering. Use context_history if you need exact evidence from before the summary.' },
+                content: `The checkpoint you requested completed. Continue the existing task with its original constraints and latest user steering. ${historyHint(pi)}` },
               { triggerTurn: true, deliverAs: 'followUp' }); } catch (error) {
                 if (ctx.hasUI) ctx.ui.notify(`Checkpoint saved, but continuation could not start: ${error.message}`, 'error');
               }

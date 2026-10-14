@@ -48,17 +48,4 @@ export const contextViews = {
     }
     return lines;
   }),
-  history: toolView('Context history', (page, expanded) => {
-    const more = page.nextOffset === null ? '' : ' · more available';
-    const lines = [Array.isArray(page.entries)
-      ? `Context history · ${count(page.totalMatches)} matches${more}`
-      : `Context history · ${page.role} · ${count(page.text.length)} characters${more}`];
-    if (expanded) {
-      if (Array.isArray(page.entries)) {
-        for (const entry of page.entries) lines.push(`${entry.id} · ${entry.role} · ${entry.timestamp ?? 'no timestamp'} · ${count(entry.characters)} characters`, entry.excerpt);
-      } else lines.push(`${page.id} · ${page.timestamp ?? 'no timestamp'} · ${count(page.totalCharacters)} total characters`, page.text);
-      if (page.nextOffset !== null) lines.push(`Next offset: ${page.nextOffset}`);
-    }
-    return lines;
-  }),
 };

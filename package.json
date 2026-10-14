@@ -1,7 +1,7 @@
 {
   "name": "@prjct.app/pi-context-control",
-  "version": "0.1.4",
-  "description": "Agent-owned context inspection, history recovery and native Pi compaction.",
+  "version": "0.2.0",
+  "description": "Agent-owned context inspection and native Pi compaction.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/prjct-app/pi-context-control.git"
@@ -35,7 +35,7 @@
   },
   "scripts": {
     "prepublishOnly": "node -e \"if (process.env.GITHUB_ACTIONS !== 'true') { console.error('Publish only from the Release workflow: merge to main.'); process.exit(1); }\"",
-    "check": "node --check index.js && node --check src/history.js && node --check src/controller.js && node --check src/views.js",
+    "check": "node --check index.js && node --check src/controller.js && node --check src/views.js",
     "test": "export PI_CODING_AGENT_DIR=\"$(mktemp -d)\" PRJCT_HOME=\"$(mktemp -d)\" && node --test tests/*.test.js",
     "check:package": "npm pack --dry-run --ignore-scripts"
   },

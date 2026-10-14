@@ -34,6 +34,7 @@
     "@earendil-works/pi-tui": "*"
   },
   "scripts": {
+    "prepublishOnly": "node -e \"if (process.env.GITHUB_ACTIONS !== 'true') { console.error('Publish only from the Release workflow: merge to main.'); process.exit(1); }\"",
     "check": "node --check index.js && node --check src/history.js && node --check src/controller.js && node --check src/views.js",
     "test": "export PI_CODING_AGENT_DIR=\"$(mktemp -d)\" PRJCT_HOME=\"$(mktemp -d)\" && node --test tests/*.test.js",
     "check:package": "npm pack --dry-run --ignore-scripts"
